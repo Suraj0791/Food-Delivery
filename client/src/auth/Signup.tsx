@@ -1,27 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { SignupInputState, userSignupSchema } from "@/schema/userSchema";
 //these loader icon nd mail icon nd taala icon of password are from lucide-react package which is a package of icons shadecn
 import { Contact, Loader2, LockKeyhole, Mail, User } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 
-type SignupInputState = {
-    fullname: string;
-    contact: number;
-    email: string;
-    password: string;
-    };
 
 const Signup = () => {
   const [input, setInput] = useState<SignupInputState>({
     email: "",
     password: "",
     fullname: "",
-    contact: 0,
+    contact: "",
 
   });
+  const[errors,setErrors]=useState<Partial<SignupInputState>>({});
 
 
   const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -32,10 +28,18 @@ const Signup = () => {
 
   const loginSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
+    //form validation cehck starts 
+    const result = userSignupSchema.safeParse(input);//returns true or false 
+    if(!result.success){
+        const fieldErrors=result.error.formErrors.fieldErrors;
+        setErrors(fieldErrors as Partial<SignupInputState>);
+        return;
+  }
+  //login api implementation starts
     console.log(input);
   };
 
-  const loading = true;
+  const loading = false;
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -57,6 +61,9 @@ const Signup = () => {
               className="pl-10 focus-visible:ring-1"
             />
             <User className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
+            {
+                errors.fullname && <p className="text-red-500 text-sm">{errors.fullname}</p>
+            }
           </div>
         </div>
         <div className="mb-4">
@@ -70,6 +77,9 @@ const Signup = () => {
               className="pl-10 focus-visible:ring-1"
             />
             <Contact className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
+            {
+                errors.contact && <p className="text-red-500 text-sm">{errors.contact}</p>
+            }
           </div>
         </div>
         <div className="mb-4">
@@ -83,6 +93,9 @@ const Signup = () => {
               className="pl-10 focus-visible:ring-1"
             />
             <Mail className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
+            {
+                errors.email && <p className="text-red-500 text-sm">{errors.email}</p>
+            }
           </div>
         </div>
         <div className="mb-4">
@@ -96,6 +109,9 @@ const Signup = () => {
               className="pl-10 focus-visible:ring-1"
             />
             <LockKeyhole className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
+            {
+                errors.password && <p className="text-red-500 text-sm">{errors.password}</p>
+            }
           </div>
         </div>
         <div className="mb-10">
