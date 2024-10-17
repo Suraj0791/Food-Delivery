@@ -7,9 +7,10 @@ import Login from './auth/Login'
 import ForgotPassword from './auth/ForgotPassword'
 import ResetPassword from './auth/ResetPassword'
 import VerifyEmail from './auth/VerifyEmail'
-import Navbar from './components/Navbar'
+
 import MainSection from './components/MainSection'
 import MainLayout from './layout/MainLayout'
+import Profile from './components/Profile'
 
 const appRouter = createBrowserRouter([
   {
@@ -20,6 +21,12 @@ const appRouter = createBrowserRouter([
         path: '/',
         element: <MainSection />,
 
+  },
+  {
+    path: '/profile',
+    element: <Profile />,
+  },
+  ]
   },
   {
     path: '/login',
