@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 //we are using the LoginInputState type from the userSchema file
-const Login = () => {
+const Login : React.FC = () => {
   const [input, setInput] = useState<LoginInputState>({
     email: "",
     password: "",
@@ -32,8 +32,10 @@ const Login = () => {
         const fieldErrors=result.error.formErrors.fieldErrors;
         setErrors(fieldErrors as Partial<SignupInputState>);
         return;
+
+    }
     console.log(input);
-  };
+  }
 
   const loading = false;
 
@@ -112,5 +114,6 @@ const Login = () => {
     </div>
   );
 };
+
 
 export default Login;
