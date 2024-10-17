@@ -27,6 +27,7 @@ import {
     const [selectedProfilePicture, setSelectedProfilePicture] =
       useState<string>(" ");
    
+    const Loading = false;
     const fileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
@@ -50,13 +51,6 @@ import {
   
     const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      try {
-        setIsLoading(true);
-        await updateProfile(profileData);
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-      }
     };
   
     return (
@@ -141,7 +135,7 @@ import {
           </div>
         </div>
         <div className="text-center">
-          {isLoading ? (
+          {Loading ? (
             <Button disabled className="bg-orange hover:bg-hoverOrange">
               <Loader2 className="mr-2 w-4 h-4 animate-spin" />
               Please wait

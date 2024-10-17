@@ -37,20 +37,15 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { Separator } from "./ui/separator";
-import { useUserStore } from "@/store/useUserStore";
-import { useCartStore } from "@/store/useCartStore";
-import { useThemeStore } from "@/store/useThemeStore";
 
 const Navbar = () => {
-  const { user, loading, logout } = useUserStore();
-  const { cart } = useCartStore();
-  const {setTheme} = useThemeStore();
-
+  const admin = true;
+  const loading = false;
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center justify-between h-14">
         <Link to="/">
-          <h1 className="font-bold md:font-extrabold text-2xl">PatelEats</h1>
+          <h1 className="font-bold md:font-extrabold text-2xl">INDIA EATS</h1>
         </Link>
         <div className="hidden md:flex items-center gap-10">
           <div className="hidden md:flex items-center gap-6">
@@ -58,7 +53,7 @@ const Navbar = () => {
             <Link to="/profile">Profile</Link>
             <Link to="/order/status">Order</Link>
 
-            {user?.admin && (
+            {admin && (
               <Menubar>
                 <MenubarMenu>
                   <MenubarTrigger>Dashboard</MenubarTrigger>
@@ -88,29 +83,26 @@ const Navbar = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={()=> setTheme('light')}>Light</DropdownMenuItem>
-                  <DropdownMenuItem onClick={()=> setTheme('dark')}>Dark</DropdownMenuItem>
+                  <DropdownMenuItem >Light</DropdownMenuItem>
+                  <DropdownMenuItem >Dark</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
             <Link to="/cart" className="relative cursor-pointer">
               <ShoppingCart />
-              {cart.length > 0 && (
                 <Button
                   size={"icon"}
                   className="absolute -inset-y-3 left-2 text-xs rounded-full w-4 h-4 bg-red-500 hover:bg-red-500"
-                >
-                  {cart.length}
-                </Button>
-              )}
+                ></Button>
             </Link>
             <div>
               <Avatar>
-                <AvatarImage src={user?.profilePicture} alt="profilephoto" />
+                <AvatarImage />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </div>
             <div>
+              {/* if loading is true then show the loader icon else show the logout button . button is initially disabled if loading is true else it is enabled  */}
               {loading ? (
                 <Button className="bg-orange hover:bg-hoverOrange">
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -118,12 +110,12 @@ const Navbar = () => {
                 </Button>
               ) : (
                 <Button
-                  onClick={logout}
                   className="bg-orange hover:bg-hoverOrange"
                 >
                   Logout
                 </Button>
               )}
+              
             </div>
           </div>
         </div>
@@ -141,8 +133,8 @@ export default Navbar;
 
 // this is the mobile navbar which is shown when the screen size is less than md  
 const MobileNavbar = () => {
-  const { user, logout, loading } = useUserStore();
-  const {setTheme} = useThemeStore();
+  const admin = true;
+    const loading = false;
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -166,8 +158,8 @@ const MobileNavbar = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
+              <DropdownMenuItem >Light</DropdownMenuItem>
+              <DropdownMenuItem >Dark</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SheetHeader>
@@ -194,7 +186,7 @@ const MobileNavbar = () => {
             <ShoppingCart />
             <span>Cart (0)</span>
           </Link>
-          {user?.admin && (
+          {admin && (
             <>
               <Link
                 to="/admin/menu"
@@ -223,10 +215,10 @@ const MobileNavbar = () => {
         <SheetFooter className="flex flex-col gap-4">
           <div className="flex flex-row items-center gap-2">
             <Avatar>
-              <AvatarImage src={user?.profilePicture} />
+              <AvatarImage  />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
-            <h1 className="font-bold">Patel Mernstack</h1>
+            <h1 className="font-bold">SURAJ </h1>
           </div>
           <SheetClose asChild>
             {loading ? (
@@ -236,7 +228,7 @@ const MobileNavbar = () => {
               </Button>
             ) : (
               <Button
-                onClick={logout}
+                
                 className="bg-orange hover:bg-hoverOrange"
               >
                 Logout
