@@ -3,7 +3,7 @@ import { AppError } from '../utils/errors/app-error.ts';
 import mongoose, { Document, Model } from 'mongoose';
 
 class CrudRepository<T extends Document> {
-    private model: Model<T>;
+    protected model: Model<T>;
 
     constructor(model: Model<T>) {
         this.model = model;
