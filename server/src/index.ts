@@ -1,17 +1,19 @@
 import express from 'express';
 import connectDB from './db/connectDB.ts';
 import { ServerConfig } from './config/index.ts';
+import  apiRoutes from './routes/index.ts';
 
 const app = express();
-const port = ServerConfig.PORT || 3000;
 
 // Connect to MongoDB
 connectDB();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.use('/api', apiRoutes);
+
+
+app.listen(ServerConfig.PORT, () => {
+  console.log(`Server is running on port ${ServerConfig.PORT}`);
 });
