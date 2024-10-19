@@ -1,3 +1,3 @@
 import UserRepository from "./user-repository";
-
-export { UserRepository };
+import RestaurantRepository from "./restraunt-repository";
+export { UserRepository, RestaurantRepository };

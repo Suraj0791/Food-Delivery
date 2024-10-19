@@ -1,11 +1,19 @@
 import { Router } from 'express';
-import userController from '../../controllers/user-controller.ts';
+import UserController from '../../controllers/user-controller';
+import { isAuthenticated } from '../../middlewares/isAuthenticate';
+
 const router = Router();
 
-router.post('/', userController.createUser);
-router.get('/:id', userController.getUser);
-router.get('/', userController.getAllUsers);
-router.put('/:id', userController.updateUser);
-router.delete('/:id', userController.deleteUser);
+
+router.post('/signup', UserController.signup);
+router.post('/login', UserController.login);
+router.post('/verify-email', UserController.verifyEmail);
+router.post('/forgot-password', UserController.forgotPassword);
+router.post('/reset-password/:token', UserController.resetPassword);
+//@ts-ignore
+router.get('/check-auth', isAuthenticated, UserController.checkAuth);
+//@ts-ignore
+router.put('/update-profile', isAuthenticated, UserController.updateProfile);
+router.post('/logout', UserController.logout);
 
 export default router;

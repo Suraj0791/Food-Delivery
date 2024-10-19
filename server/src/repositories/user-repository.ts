@@ -7,15 +7,15 @@ class UserRepository extends CrudRepository<IUserDocument> {
     super(User);
   }
 
-  async findByEmail(email: string): Promise<IUserDocument | null> {
+  async findByEmail(email: string) {
     return this.model.findOne({ email });
   }
   
-  async findByVerificationToken(token: string): Promise<IUserDocument | null> {
+  async findByVerificationToken(token: string) {
     return this.model.findOne({ verificationToken: token, verificationTokenExpiresAt: { $gt: Date.now() } });
   }
   
-  async findByResetToken(token: string): Promise<IUserDocument | null> {
+  async findByResetToken(token: string) {
     return this.model.findOne({ resetPasswordToken: token, resetPasswordTokenExpiresAt: { $gt: Date.now() } });
   }
 }

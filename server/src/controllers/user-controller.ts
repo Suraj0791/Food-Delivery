@@ -1,58 +1,126 @@
 import { Request, Response, NextFunction } from 'express';
-import { createUser, deleteUser, getUser, getAllUsers, updateUser } from '../services/user-service.ts';
-import { IUser } from '../models/user.model.ts';
-import bcrypt from 'bcryptjs';
+import { signup, login, verifyEmail, forgotPassword, resetPassword, checkAuth, updateProfile } from '../services/user-service.ts';
+import cloudinary from '../utils/cloudinary.ts';
+
 
 class UserController {
-    async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async signup(req: Request, res: Response, next: NextFunction) {
         try {
-            const { fullname, email, password, contact, address, city, country, profilePicture, admin } = req.body;
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const userData: Partial<IUser> = { fullname, email, password: hashedPassword, contact, address, city, country, profilePicture, admin };
-            const newUser = await createUser(userData);
-            res.status(201).json(newUser);
+            //@ts-ignore
+            const user = await signup(req.body, res);
+            res.status(201).json({
+                success: true,
+                message: 'Account created successfully',
+                user: { ...user.toObject(), password: undefined },
+            });
         } catch (error) {
             next(error);
         }
     }
 
-    async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async login(req: Request, res: Response, next: NextFunction){
         try {
-            const { id } = req.params;
-            const deletedUser = await deleteUser(id);
-            res.status(200).json(deletedUser);
+            //@ts-ignore
+            const { email, password } = req.body;
+            //@ts-ignore
+            const user = await login(email, password, res);
+            res.status(200).json({
+                success: true,
+                message: `Welcome back ${user.fullname}`,
+                user: { ...user.toObject(), password: undefined },
+            });
         } catch (error) {
             next(error);
         }
     }
 
-    async getUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async verifyEmail(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params;
-            const user = await getUser(id);
-            res.status(200).json(user);
+            const { verificationCode } = req.body;
+            const user = await verifyEmail(verificationCode);
+            res.status(200).json({
+                success: true,
+                message: 'Email verified successfully.',
+                user: { ...user.toObject(), password: undefined },
+            });
         } catch (error) {
             next(error);
         }
     }
 
-    async getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async forgotPassword(req: Request, res: Response, next: NextFunction) {
         try {
-            const users = await getAllUsers();
-            res.status(200).json(users);
+            const { email } = req.body;
+            await forgotPassword(email);
+            res.status(200).json({
+                success: true,
+                message: 'Password reset link sent to your email',
+            });
         } catch (error) {
             next(error);
         }
     }
 
-    async updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async resetPassword(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.params;
-            const { fullname, email, password, contact, address, city, country, profilePicture, admin } = req.body;
-            const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
-            const userData: Partial<IUser> = { fullname, email, password: hashedPassword, contact, address, city, country, profilePicture, admin };
-            const updatedUser = await updateUser(id, userData);
-            res.status(200).json(updatedUser);
+            const { token } = req.params;
+            const { newPassword } = req.body;
+            await resetPassword(token, newPassword);
+            res.status(200).json({
+                success: true,
+                message: 'Password reset successfully.',
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async checkAuth(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.id;
+            const user = await checkAuth(userId);
+            if (!user) {
+                //@ts-ignore
+                return res.status(404).json({
+                    success: false,
+                    message: 'User not found',
+                });
+            }
+            res.status(200).json({
+                success: true,
+                user: { ...user.toObject(), password: undefined },
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async updateProfile(req: Request, res: Response, next: NextFunction){
+        try {
+            const userId = req.id;
+            const { fullname, email, address, city, country, profilePicture } = req.body;
+            let cloudResponse: any;
+            if (profilePicture) {
+                cloudResponse = await cloudinary.uploader.upload(profilePicture);
+            }
+            const updatedData = { fullname, email, address, city, country, profilePicture: cloudResponse?.secure_url };
+            const user = await updateProfile(userId, updatedData);
+            res.status(200).json({
+                success: true,
+                user: { ...user.toObject(), password: undefined },
+                message: 'Profile updated successfully',
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async logout(_: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            res.clearCookie('token').status(200).json({
+                success: true,
+                message: 'Logged out successfully.',
+            });
         } catch (error) {
             next(error);
         }

@@ -4,7 +4,7 @@ import { Response } from "express";
 
 import { ServerConfig } from '../config/index.ts';
 
-export const generateToken = (res:Response, user:IUserDocument) => {
+export const generateToken = (res:Response, user:IUserDocument ) => {
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET is not defined');
   }
