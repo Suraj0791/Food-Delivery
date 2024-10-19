@@ -11,4 +11,6 @@ export const ServerConfig = {
     API_SECRET: process.env.API_SECRET,
     CLOUD_NAME: process.env.CLOUD_NAME,
     MAILTRAP_API_TOKEN: process.env.MAILTRAP_API_TOKEN,
+    STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
 };
