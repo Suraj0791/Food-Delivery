@@ -1,6 +1,6 @@
 import { RestaurantRepository } from '../repositories/index.ts';
 import { IRestaurant } from '../models/restraunt.model.ts';
-import { uploadImageOnCloudinary } from '../utils/imageUpload.ts';
+import uploadImageOnCloudinary from '../utils/imageUpload.ts';
 import { Order } from '../models/order.model';
 
 const restaurantRepo = new RestaurantRepository();
