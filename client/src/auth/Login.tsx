@@ -6,6 +6,8 @@ import { LoginInputState, SignupInputState, userLoginSchema } from "@/schema/use
 import { Loader2, LockKeyhole, Mail } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUserStore } from "@/store/useUserStore";
+
 
 
 //we are using the LoginInputState type from the userSchema file
@@ -16,6 +18,8 @@ const Login : React.FC = () => {
   });
 
   const[errors,setErrors]=useState<Partial<SignupInputState>>({});
+  const { loading, login } = useUserStore();
+  const navigate = useNavigate();
 
 
   const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +38,14 @@ const Login : React.FC = () => {
         return;
 
     }
-    console.log(input);
+    try {
+      await login(input);
+      navigate("/");
+    } catch (error) {console.log(error);
+    }
+
   }
 
-  const loading = false;
 
   return (
     <div className="flex items-center justify-center min-h-screen">
