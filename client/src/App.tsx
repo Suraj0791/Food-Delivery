@@ -1,24 +1,25 @@
-import Login from "./auth/Login";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Signup from "./auth/Signup";
-import ForgotPassword from "./auth/ForgotPassword";
-import ResetPassword from "./auth/ResetPassword";
-import VerifyEmail from "./auth/VerifyEmail";
-import HereSection from "./components/MainSection";
-import MainLayout from "./layout/MainLayout";
-import Profile from "./components/Profile";
-import SearchPage from "./components/SearchPage";
-import RestaurantDetail from "./components/RestrauntDetail";
-import Cart from "./components/Cart";
-import Restaurant from "./admin/Restaurant";
-import AddMenu from "./admin/Addmenu";
-import Orders from "./admin/Orders";
-import Success from "./components/Success";
-import { useUserStore } from "./store/useUserStore";
-import { Navigate } from "react-router-dom";
-import { useEffect } from "react";
-import Loading from "./components/Loading";
-import { useThemeStore } from "./store/useThemeStore";
+
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import Signup from './auth/Signup'
+import Login from './auth/Login'
+import ForgotPassword from './auth/ForgotPassword'
+import ResetPassword from './auth/ResetPassword'
+import VerifyEmail from './auth/VerifyEmail'
+
+import MainSection from './components/MainSection'
+import MainLayout from './layout/MainLayout'
+import Profile from './components/Profile'
+import SearchPage from './components/SearchPage'
+import { useUserStore } from './store/useUserStore'
+import RestaurantDetail from './components/RestrauntDetail'
+import Cart from './components/Cart'
+import Restaurant from './admin/Restaurant'
+import AddMenu from './admin/Addmenu'
+import Orders from './admin/Orders'
+import Success from './components/Success'
+import Loading from './components/Loading'
+import { useEffect } from 'react'
+import { useThemeStore } from './store/useThemeStore'
 
 const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, user } = useUserStore();
@@ -32,6 +33,7 @@ const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
   return children;
 };
 
+
 const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, user } = useUserStore();
   if(isAuthenticated && user?.isVerified){
@@ -39,6 +41,7 @@ const AuthenticatedUser = ({ children }: { children: React.ReactNode }) => {
   }
   return children;
 };
+
 
 const AdminRoute = ({children}:{children:React.ReactNode}) => {
   const {user, isAuthenticated} = useUserStore();
@@ -52,75 +55,75 @@ const AdminRoute = ({children}:{children:React.ReactNode}) => {
   return children;
 }
 
+
 const appRouter = createBrowserRouter([
   {
-    path: "/",
-    element: (
-      <ProtectedRoutes>
-        <MainLayout />
-      </ProtectedRoutes>
-    ),
+    path: '/',
+    element: <ProtectedRoutes><MainLayout /></ProtectedRoutes>,
     children: [
       {
-        path: "/",
-        element: <HereSection />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/search/:text",
-        element: <SearchPage />,
-      },
-      {
-        path: "/restaurant/:id",
-        element: <RestaurantDetail />,
-      },
-      {
-        path: "/cart",
-        element: <Cart />,
-      },
-      {
-        path: "/order/status",
-        element: <Success />,
-      },
-      // admin services start from here
-      {
-        path: "/admin/restaurant",
-        element:<AdminRoute><Restaurant /></AdminRoute>,
-      },
-      {
-        path: "/admin/menu",
-        element:<AdminRoute><AddMenu /></AdminRoute>,
-      },
-      {
-        path: "/admin/orders",
-        element:<AdminRoute><Orders /></AdminRoute>,
-      },
-    ],
+        path: '/',
+        element: <MainSection />,
+
   },
   {
-    path: "/login",
-    element:<AuthenticatedUser><Login /></AuthenticatedUser>,
+    path: '/profile',
+    element: <Profile />,
   },
   {
-    path: "/signup",
-    element:<AuthenticatedUser><Signup /></AuthenticatedUser> ,
+    path: '/search/:text',
+    element: <SearchPage />,
   },
   {
-    path: "/forgot-password",
-    element: <AuthenticatedUser><ForgotPassword /></AuthenticatedUser>,
+    path: "/restaurant/:id",
+    element: <RestaurantDetail />,
   },
   {
-    path: "/reset-password",
-    element: <ResetPassword />,
+    path: "/cart",
+    element: <Cart />,
   },
   {
-    path: "/verify-email",
-    element: <VerifyEmail />,
+    path: "/order/status",
+    element: <Success />,
   },
-]);
+   // admin services start from here
+   {
+    path: "/admin/restaurant",
+    element:<AdminRoute><Restaurant /></AdminRoute>,
+  },
+  {
+    path: "/admin/menu",
+    element:<AdminRoute><AddMenu /></AdminRoute>,
+  },
+  {
+    path: "/admin/orders",
+    element:<AdminRoute><Orders /></AdminRoute>,
+  },
+
+  ]
+  },
+  {
+    path: '/login',
+    element: <AuthenticatedUser><Login /></AuthenticatedUser>,
+  },
+  {
+    path: '/signup',
+    element: <AuthenticatedUser><Signup /></AuthenticatedUser>,
+  },
+  {
+    path: '/forgot-password',
+    element:<AuthenticatedUser><ForgotPassword /></AuthenticatedUser>,
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPassword/>,
+  },
+  {
+    path:'/verify-email',
+    element:<VerifyEmail/>
+  }
+
+])
 
 function App() {
   const initializeTheme = useThemeStore((state:any) => state.initializeTheme);
@@ -132,11 +135,12 @@ function App() {
   },[checkAuthentication])
 
   if(isCheckingAuth) return <Loading/>
+
   return (
-    <main>
-      <RouterProvider router={appRouter}></RouterProvider>
-    </main>
-  );
+    <>
+     <RouterProvider router={appRouter} />
+    </>
+  )
 }
 
-export default App;
+export default App

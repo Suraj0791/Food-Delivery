@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { addMenu, editMenu } from '../services/menu-service';
+import { addMenu, editMenu } from '../services/menu-service.ts';
 
 class MenuController {
     async addMenu(req: Request, res: Response, next: NextFunction): Promise<void> {

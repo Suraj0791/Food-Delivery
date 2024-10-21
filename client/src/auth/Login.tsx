@@ -2,12 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { LoginInputState, SignupInputState, userLoginSchema } from "@/schema/userSchema";
+import { useUserStore } from "@/store/useUserStore";
 //these loader icon nd mail icon nd taala icon of password are from lucide-react package which is a package of icons shadecn
 import { Loader2, LockKeyhole, Mail } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useUserStore } from "@/store/useUserStore";
-
 
 
 //we are using the LoginInputState type from the userSchema file
@@ -18,10 +17,8 @@ const Login : React.FC = () => {
   });
 
   const[errors,setErrors]=useState<Partial<SignupInputState>>({});
-  const { loading, login } = useUserStore();
-  const navigate = useNavigate();
-
-
+  const{loading,login}=useUserStore();
+  const navigate=useNavigate();
   const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
     //destructuring the name and value from the target of the event object and 
     const { name, value } = e.target;
@@ -38,12 +35,11 @@ const Login : React.FC = () => {
         return;
 
     }
-    try {
-      await login(input);
-      navigate("/");
-    } catch (error) {console.log(error);
-    }
+    //login function is called from the useUserStore file
+    await login(input);
+    navigate('/');
 
+    console.log(input);
   }
 
 

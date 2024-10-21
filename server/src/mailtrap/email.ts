@@ -1,5 +1,8 @@
-import { generatePasswordResetEmailHtml, generateResetSuccessEmailHtml, generateWelcomeEmailHtml, htmlContent } from "./htmlEmail";
-import { client, sender } from "./mailtrap";
+import { generatePasswordResetEmailHtml, generateResetSuccessEmailHtml, generateWelcomeEmailHtml, htmlContent } from "./htmlEmail.ts";
+import { client, sender } from "./mailtrap.ts";
+
+
+
 
 export const sendVerificationEmail = async (email: string, verificationToken: string) => {
     const recipient = [{ email }];

@@ -1,15 +1,15 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { StatusCodes } from 'http-status-codes';
-import UserRepository from '../repositories/user-repository';
-import { IUser, IUserDocument } from '../models/user.model';
-import { AppError } from '../utils/errors/app-error';
-import { generateToken } from '../utils/generateToken';
-import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail } from '../mailtrap/email';
-import { ServerConfig } from '../config';
+import UserRepository from '../repositories/user-repository.ts';
+import { Response } from 'express';
+import { IUser, IUserDocument } from '../models/user.model.ts';
+import { AppError } from '../utils/errors/app-error.ts';
+import { generateToken } from '../utils/generateToken.ts';
+import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail } from '../mailtrap/email.ts';
+import { ServerConfig } from '../config/index.ts';
 
 const userRepo = new UserRepository();
-
 export const signup = async (data: Partial<IUser>, res: Response) => {
     const { fullname, email, password, contact } = data;
 
@@ -42,12 +42,18 @@ export const signup = async (data: Partial<IUser>, res: Response) => {
     return user;
 };
 
-export const login = async (email: string, password: string, res: Response) => {
+export const login = async (data:Partial<IUser>,res: Response<any, Record<string, any>>) => {
+    const { email, password } = data;
+    if (!email) {
+        throw new AppError('Email is required', StatusCodes.BAD_REQUEST);
+    }
+    if (!password) {
+        throw new AppError('Password is required', StatusCodes.BAD_REQUEST);
+    }
     const user = await userRepo.findByEmail(email);
     if (!user || !(await bcrypt.compare(password, user.password))) {
         throw new AppError('Incorrect email or password', StatusCodes.BAD_REQUEST);
     }
-    //@ts-ignore
     generateToken(res, user);
     user.lastLogin = new Date();
     await user.save();

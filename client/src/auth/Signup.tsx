@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { SignupInputState, userSignupSchema } from "@/schema/userSchema";
+import { useUserStore } from "@/store/useUserStore";
 //these loader icon nd mail icon nd taala icon of password are from lucide-react package which is a package of icons shadecn
 import { Contact, Loader2, LockKeyhole, Mail, User } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
@@ -18,8 +19,8 @@ const Signup = () => {
 
   });
   const[errors,setErrors]=useState<Partial<SignupInputState>>({});
-
-
+  const{loading,signup}=useUserStore();
+  const navigate=useNavigate();
   const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
     //destructuring the name and value from the target of the event object and 
     const { name, value } = e.target;
@@ -36,10 +37,16 @@ const Signup = () => {
         return;
   }
   //login api implementation starts
+   try{
+    await signup(input);
+    navigate("/verify-email");
     console.log(input);
+   }catch(error){
+        console.log(error);
+    }
   };
 
-  const loading = false;
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -116,15 +123,12 @@ const Signup = () => {
         </div>
         <div className="mb-10">
              {/* if loading is true then show the loader icon else show the login button . button is initially disabled if loading is true else it is enabled  */}
-          {loading ? (
+             {loading ? (
             <Button disabled className="w-full bg-orange hover:bg-hoverOrange">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
             </Button>
           ) : (
-            <Button
-              type="submit"
-              className="w-full bg-orange hover:bg-hoverOrange"
-            >
+            <Button type="submit" className="w-full bg-orange hover:bg-hoverOrange">
               Signup
             </Button>
           )}
@@ -139,9 +143,9 @@ const Signup = () => {
         </div>
         <Separator />
         <p className="mt-2">
-          Don't have an account?{" "}
-          <Link to="/signup" className="text-blue-500">
-            Signup
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500">
+            Login
           </Link>
         </p>
       </form>

@@ -1,5 +1,5 @@
 import { MenuRepository } from '../repositories/index.ts';
-import uploadImageOnCloudinary from '../utils/imageUpload';
+import uploadImageOnCloudinary from '../utils/imageUpload.ts';
 import { IMenu } from '../models/menu.model.ts';
 import mongoose from 'mongoose';
 import { Restaurant } from '../models/restraunt.model.ts';

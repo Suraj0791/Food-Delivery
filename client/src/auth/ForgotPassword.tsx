@@ -15,7 +15,6 @@ const ForgotPassword = () => {
           <h1 className="font-extrabold text-2xl mb-2">Forgot Password</h1>
           <p className="text-sm text-gray-600">Enter your email address to reset your password</p>
         </div>
-        //we are using relative and absolute to show the icon inside the input field . so we are using relative in the parent div and absolute in the child div
         <div className="relative w-full">
             <Input
             type="text"
@@ -24,7 +23,6 @@ const ForgotPassword = () => {
             placeholder="Enter your email"
             className="pl-10"
             />
-            //this is the icon which is shown inside the input field . we are using absolute to show the icon inside the input field . we are using pointer-events-none so that the icon is not clickable. we are using left-2 and inset-y-2 to show the icon at the left side of the input field. inset is used to show the icon at the top and left side of the input field 
             <Mail className="absolute inset-y-2 left-2 text-gray-600 pointer-events-none"/>
         </div>
         {
@@ -43,4 +41,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ForgotPassword;  

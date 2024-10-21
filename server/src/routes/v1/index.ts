@@ -5,9 +5,9 @@ import menuRoutes from './menu-routes.ts';
 import orderRoutes from './order-routes.ts';
 const router = Router();
 
-router.use('/users', userRoutes);
-router.use('/restaurants', restaurantRoutes);
-router.use('/menus', menuRoutes);
-router.use('/orders', orderRoutes);
+router.use('/user', userRoutes);
+router.use('/restaurant', restaurantRoutes);
+router.use('/menu', menuRoutes);
+router.use('/order', orderRoutes);
 
 export default router;

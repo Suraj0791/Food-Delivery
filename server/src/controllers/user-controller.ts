@@ -6,14 +6,19 @@ import cloudinary from '../utils/cloudinary.ts';
 class UserController {
     async signup(req: Request, res: Response, next: NextFunction) {
         try {
+            const data = req.body;
             //@ts-ignore
-            const user = await signup(req.body, res);
+            const user = await signup(data,res);
+            //res is the response that is being sent to the server . 
+            //response is used by client to get the data from the server .
+            //client checks the response to see if the data is being sent to the server or not .
             res.status(201).json({
                 success: true,
                 message: 'Account created successfully',
+                //user is the data that is being sent to the server . the user data is being sent to the server in the form of json . .toObject is used to convert the data into the object format . password is set to undefined so that the password is not visible to the user .
                 user: { ...user.toObject(), password: undefined },
             });
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -29,7 +34,7 @@ class UserController {
                 message: `Welcome back ${user.fullname}`,
                 user: { ...user.toObject(), password: undefined },
             });
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -43,7 +48,7 @@ class UserController {
                 message: 'Email verified successfully.',
                 user: { ...user.toObject(), password: undefined },
             });
-        } catch (error) {
+        } catch (error : any) {
             next(error);
         }
     }
@@ -80,7 +85,6 @@ class UserController {
             const userId = req.id;
             const user = await checkAuth(userId);
             if (!user) {
-                //@ts-ignore
                 return res.status(404).json({
                     success: false,
                     message: 'User not found',

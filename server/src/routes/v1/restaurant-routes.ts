@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import restrauntController from '../../controllers/restraunt-controller.ts';
+import RestaurantController from '../../controllers/restraunt-controller.ts';
 import { isAuthenticated } from '../../middlewares/isAuthenticate.ts';
 import multer from 'multer';
 
