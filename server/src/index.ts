@@ -19,10 +19,13 @@ const corsOptions = {
   credentials: true
 }
 app.use(cors(corsOptions));
-
-
-
 app.use('/api', apiRoutes);
+
+app.use(express.static(path.join(DIRNAME,"/client/dist")));
+app.use("*",(_,res) => {
+    res.sendFile(path.resolve(DIRNAME, "client","dist","index.html"));
+});
+
 
 
 app.listen(ServerConfig.PORT, () => {

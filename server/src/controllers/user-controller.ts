@@ -25,10 +25,8 @@ class UserController {
 
     async login(req: Request, res: Response, next: NextFunction){
         try {
-            //@ts-ignore
-            const { email, password } = req.body;
-            //@ts-ignore
-            const user = await login(email, password, res);
+            const data = req.body;
+            const user = await login(data, res);
             res.status(200).json({
                 success: true,
                 message: `Welcome back ${user.fullname}`,
