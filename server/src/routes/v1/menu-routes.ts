@@ -3,7 +3,7 @@ import MenuController from '../../controllers/menu-controller.ts';
 import { isAuthenticated } from '../../middlewares/isAuthenticate.ts';
 import multer from 'multer';
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 const router = Router();
 
 //@ts-ignore

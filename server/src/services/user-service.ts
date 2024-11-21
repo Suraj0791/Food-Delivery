@@ -8,6 +8,7 @@ import { AppError } from '../utils/errors/app-error.ts';
 import { generateToken } from '../utils/generateToken.ts';
 import { sendVerificationEmail, sendWelcomeEmail, sendPasswordResetEmail, sendResetSuccessEmail } from '../mailtrap/email.ts';
 import { ServerConfig } from '../config/index.ts';
+import { generateVerificationCode } from '../utils/generateVerificationcode.ts';
 
 const userRepo = new UserRepository();
 export const signup = async (data: Partial<IUser>, res: Response) => {
@@ -20,11 +21,13 @@ export const signup = async (data: Partial<IUser>, res: Response) => {
     if (user) {
         throw new AppError('User already exists with this email', StatusCodes.BAD_REQUEST);
     }
- 
+    
+
 
     //@ts-ignore
     const hashedPassword = await bcrypt.hash(password, 10);
-    const verificationToken = crypto.randomBytes(40).toString('hex');
+    const verificationCode = generateVerificationCode();
+
 
     user = await userRepo.create({
         fullname,
@@ -32,17 +35,17 @@ export const signup = async (data: Partial<IUser>, res: Response) => {
         //@ts-ignore
         password: hashedPassword,
         contact: Number(contact),
-        verificationToken,
-        verificationTokenExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        verificationCode,
+        verificationCodeExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
     //@ts-ignore
     generateToken(res, user);
-    await sendVerificationEmail(email, verificationToken);
 
+    await sendVerificationEmail(email, verificationCode);
     return user;
 };
 
-export const login = async (data:Partial<IUser>,res: Response<any, Record<string, any>>) => {
+export const login = async (data: Partial<IUser>, res: Response<any, Record<string, any>>) => {
     const { email, password } = data;
     if (!email) {
         throw new AppError('Email is required', StatusCodes.BAD_REQUEST);
@@ -62,20 +65,22 @@ export const login = async (data:Partial<IUser>,res: Response<any, Record<string
 };
 
 export const verifyEmail = async (verificationCode: string) => {
-    const user = await userRepo.findByVerificationToken(verificationCode);
+    const user = await userRepo.findByverificationCode(verificationCode);
     if (!user) {
         throw new AppError('Invalid or expired verification token', StatusCodes.BAD_REQUEST);
     }
 
     user.isVerified = true;
-    user.verificationToken = undefined;
-    user.verificationTokenExpiresAt = undefined;
+    user.verificationCode = undefined;
+    user.verificationCodeExpiresAt = undefined;
     await user.save();
 
     await sendWelcomeEmail(user.email, user.fullname);
 
     return user;
 };
+
+
 
 export const forgotPassword = async (email: string) => {
     const user = await userRepo.findByEmail(email);

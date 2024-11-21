@@ -3,16 +3,16 @@ import RestaurantController from '../../controllers/restraunt-controller.ts';
 import { isAuthenticated } from '../../middlewares/isAuthenticate.ts';
 import multer from 'multer';
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 const router = Router();
 
 //@ts-ignore
-router.post('/', isAuthenticated, upload.single('image'), RestaurantController.createRestaurant);
+router.post('/', isAuthenticated, upload.single('imageFile'), RestaurantController.createRestaurant);
 //@ts-ignore
 router.get('/', isAuthenticated, RestaurantController.getRestaurant);
 //@ts-ignore
 
-router.put('/', isAuthenticated, upload.single('image'), RestaurantController.updateRestaurant);
+router.put('/', isAuthenticated, upload.single('imageFile'), RestaurantController.updateRestaurant);
 //@ts-ignore
 
 router.get('/orders', isAuthenticated, RestaurantController.getRestaurantOrder);

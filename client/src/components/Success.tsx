@@ -1,10 +1,9 @@
- 
 import { IndianRupee } from "lucide-react";
 import { Separator } from "./ui/separator";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useOrderStore } from "@/store/useOrderStore";
-import { useEffect } from "react"; 
+import { useEffect } from "react";
 import { CartItem } from "@/types/cartType";
 
 const Success = () => {
@@ -37,9 +36,9 @@ const Success = () => {
             Order Summary
           </h2>
           {/* Your Ordered Item Display here  */}
-          {orders.map((order:any, index:number) => (
+          {orders.map((order: any, index: number) => (
             <div key={index}>
-              {order.cartItems.map((item:CartItem) => (
+              {order.cartItems.map((item: CartItem) => (
                 <div className="mb-4">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
@@ -55,7 +54,9 @@ const Success = () => {
                     <div className="text-right">
                       <div className="text-gray-800 dark:text-gray-200 flex items-center">
                         <IndianRupee />
-                        <span className="text-lg font-medium">{item.price}</span>
+                        <span className="text-lg font-medium">
+                          {item.price}
+                        </span>
                       </div>
                     </div>
                   </div>

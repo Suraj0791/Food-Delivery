@@ -40,7 +40,7 @@ const Cart = () => {
         </TableHeader>
         <TableBody>
           {cart.map((item: CartItem) => (
-            <TableRow>
+            <TableRow key={item._id}>
               <TableCell>
                 <Avatar>
                   <AvatarImage src={item.image} alt="" />

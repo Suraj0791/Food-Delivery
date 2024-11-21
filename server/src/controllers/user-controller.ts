@@ -19,6 +19,7 @@ class UserController {
                 user: { ...user.toObject(), password: undefined },
             });
         } catch (error : any) {
+            console.log(error)
             next(error);
         }
     }
@@ -38,8 +39,10 @@ class UserController {
     }
 
     async verifyEmail(req: Request, res: Response, next: NextFunction) {
+        console.log("request received")
         try {
             const { verificationCode } = req.body;
+            console.log(verificationCode)
             const user = await verifyEmail(verificationCode);
             res.status(200).json({
                 success: true,
@@ -47,6 +50,7 @@ class UserController {
                 user: { ...user.toObject(), password: undefined },
             });
         } catch (error : any) {
+            console.log(error)
             next(error);
         }
     }

@@ -1,19 +1,25 @@
-import CrudRepository from "./crud-repository.ts";
-import { User, IUserDocument } from "../models/user.model.ts";
-import { Restaurant ,IRestaurantDocument} from "../models/restraunt.model.ts";
+import { Restaurant, IRestaurant } from '../models/restraunt.model.ts';
 
-
-class RestaurantRepository extends CrudRepository<IRestaurantDocument> {
-  constructor() {
-    super(Restaurant);
+export class RestaurantRepository {
+  async create(data: Partial<IRestaurant>) {
+    const restaurant = new Restaurant(data);
+    await restaurant.save();
+    return restaurant;
   }
-  async findByUserId(userId: string): Promise<IRestaurantDocument | null> {
-    return this.model.findOne({ user: userId });
-}
 
-async search(query: any): Promise<IRestaurantDocument[]> {
-    return this.model.find(query);
-}
-}
+  async findByUserId(userId: string) {
+    return Restaurant.findOne({ user: userId });
+  }
 
-export default RestaurantRepository;
+  async findById(restaurantId: string) {
+    return Restaurant.findById(restaurantId);
+  }
+
+  async update(restaurantId: string, data: Partial<IRestaurant>) {
+    return Restaurant.findByIdAndUpdate(restaurantId, data, { new: true });
+  }
+
+  async find(query: any) {
+    return Restaurant.find(query);
+  }
+}

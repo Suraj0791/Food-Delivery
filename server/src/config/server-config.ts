@@ -10,8 +10,16 @@ export const ServerConfig = {
     API_KEY: process.env.API_KEY,
     API_SECRET: process.env.API_SECRET,
     CLOUD_NAME: process.env.CLOUD_NAME,
-    MAILTRAP_API_TOKEN: process.env.MAILTRAP_API_TOKEN,
     STRIPE_PUBLISHABLE_KEY: process.env.STRIPE_PUBLISHABLE_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     WEBHOOK_ENDPOINT_SECRET: process.env.WEBHOOK_ENDPOINT_SECRET,
+    SMTP_PORT: process.env.SMTP_PORT,
+
+  SMTP_SECURE: process.env.SMTP_SECURE === 'true',
+
+  SMTP_USER: process.env.SMTP_USER,
+
+  SMTP_PASS: process.env.SMTP_PASS,
+
+  SMTP_HOST: process.env.SMTP_HOST
 };

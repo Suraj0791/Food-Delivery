@@ -1,6 +1,6 @@
 import OrderRepository from '../repositories/order-repository.ts';
 import { Restaurant } from '../models/restraunt.model.ts';
-import { IOrder } from '../models/order.model.ts';
+import { Order,IOrder } from '../models/order.model.ts';
 import Stripe from 'stripe';
 import { ServerConfig } from '../config/server-config.ts';
 
@@ -14,21 +14,19 @@ const orderRepository = new OrderRepository();
 
 type CheckoutSessionRequest = {
     cartItems: {
-
         menuId: string;
-        name: string;
-        image: string;
-        price: number;
         quantity: number;
     }[];
     deliveryDetails: {
-        name: string;
-        email: string;
         address: string;
         city: string;
+        state: string;
+        zipCode: string;
+        country: string;
     };
     restaurantId: string;
 };
+
 
 export const getOrders = async (userId: string) => {
     return orderRepository.findByUserId(userId);
@@ -50,6 +48,7 @@ export const createCheckoutSession = async (checkoutSessionRequest: CheckoutSess
         cartItems: checkoutSessionRequest.cartItems,
         status: 'pending',
     });
+    
 
     const menuItems = restaurant.menus;
     //create line items for the checkout session using the createLineItems function. the createLineItems function maps the cart items to the menu items and calculates the total amount. it returns an array of line items that can be used to create a stripe checkout session.
@@ -68,7 +67,6 @@ export const createCheckoutSession = async (checkoutSessionRequest: CheckoutSess
         metadata: {
             //@ts-ignore
             orderId: order._id.toString(),
-            images: JSON.stringify(menuItems.map((item: any) => item.image)),
         },
     });
 
@@ -79,6 +77,7 @@ export const createCheckoutSession = async (checkoutSessionRequest: CheckoutSess
     await order.save();
     return session;
 };
+
 
 //handle the stripe webhook event for the checkout.session.completed event. the checkout.session.completed event is triggered when a checkout session is completed successfully. the event contains the session object, which contains the metadata of the order. the metadata contains the order ID, which is used to find the order in the database. the order status is updated to confirmed, and the total amount is updated with the amount_total from the session object. the order is then saved to the database.
 export const stripeWebhook = async (payload: string, signature: string) => {

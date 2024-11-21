@@ -22,6 +22,7 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set, get) =
             const response = await axios.post(`${API_END_POINT}/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
+
                 }
             });
             if (response.data.success) {

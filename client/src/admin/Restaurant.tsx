@@ -49,10 +49,14 @@ const Restaurant = () => {
       formData.append("country", input.country);
       formData.append("deliveryTime", input.deliveryTime.toString());
       formData.append("cuisines", JSON.stringify(input.cuisines));
-
+      console.log('Selected file:', input.imageFile);
       if (input.imageFile) {
-        formData.append("imageFile", input.imageFile);
-      }
+    formData.append("imageFile", input.imageFile);
+   }
+
+  
+    
+    
 
       if (restaurant) {
         // update
@@ -78,7 +82,6 @@ const Restaurant = () => {
           cuisines: restaurant.cuisines
             ? restaurant.cuisines.map((cuisine: string) => cuisine)
             : [],
-          imageFile: undefined,
         });
       };
       }

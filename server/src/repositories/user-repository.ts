@@ -1,5 +1,4 @@
 import CrudRepository from "./crud-repository.ts";
-
 import { User, IUserDocument } from "../models/user.model.ts";
 
 class UserRepository extends CrudRepository<IUserDocument> {
@@ -10,17 +9,18 @@ class UserRepository extends CrudRepository<IUserDocument> {
   async findByEmail(email: string) {
     return this.model.findOne({ email });
   }
-  
-  async findByVerificationToken(token: string) {
-    return this.model.findOne({ verificationToken: token, verificationTokenExpiresAt: { $gt: Date.now() } });
+
+  async findByverificationCode(token: string) {
+    return this.model.findOne({ verificationCode: token, verificationCodeExpiresAt: { $gt: Date.now() } });
   }
-  
+
   async findByResetToken(token: string) {
     return this.model.findOne({ resetPasswordToken: token, resetPasswordTokenExpiresAt: { $gt: Date.now() } });
   }
+
+  async findOne(query: { verificationCode: string }) {
+    return this.model.findOne(query);
+  }
 }
-
-
-
 
 export default UserRepository;

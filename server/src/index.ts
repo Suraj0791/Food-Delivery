@@ -5,9 +5,11 @@ import  apiRoutes from './routes/index.ts';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import path from 'path';
 
 const app = express();
 
+const DIRNAME = path.resolve();
 
 
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -21,10 +23,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api', apiRoutes);
 
-app.use(express.static(path.join(DIRNAME,"/client/dist")));
-app.use("*",(_,res) => {
-    res.sendFile(path.resolve(DIRNAME, "client","dist","index.html"));
-});
+
 
 
 

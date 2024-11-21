@@ -8,45 +8,40 @@ import { Contact, Loader2, LockKeyhole, Mail, User } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-
-
 const Signup = () => {
   const [input, setInput] = useState<SignupInputState>({
     email: "",
     password: "",
     fullname: "",
     contact: "",
-
   });
-  const[errors,setErrors]=useState<Partial<SignupInputState>>({});
-  const{loading,signup}=useUserStore();
-  const navigate=useNavigate();
+  const [errors, setErrors] = useState<Partial<SignupInputState>>({});
+  const { loading, signup } = useUserStore();
+  const navigate = useNavigate();
   const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    //destructuring the name and value from the target of the event object and 
+    //destructuring the name and value from the target of the event object and
     const { name, value } = e.target;
     setInput({ ...input, [name]: value });
   };
 
   const loginSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
-    //form validation cehck starts 
-    const result = userSignupSchema.safeParse(input);//returns true or false 
-    if(!result.success){
-        const fieldErrors=result.error.formErrors.fieldErrors;
-        setErrors(fieldErrors as Partial<SignupInputState>);
-        return;
-  }
-  //login api implementation starts
-   try{
-    await signup(input);
-    navigate("/verify-email");
-    console.log(input);
-   }catch(error){
-        console.log(error);
+    //form validation cehck starts
+    const result = userSignupSchema.safeParse(input); //returns true or false
+    if (!result.success) {
+      const fieldErrors = result.error.formErrors.fieldErrors;
+      setErrors(fieldErrors as Partial<SignupInputState>);
+      return;
+    }
+    //login api implementation starts
+    try {
+      await signup(input);
+      navigate("/verify-email");
+      console.log(input);
+    } catch (error) {
+      console.log(error);
     }
   };
-
-  
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -55,7 +50,7 @@ const Signup = () => {
         className="md:p-8 w-full max-w-md rounded-lg md:border border-gray-200 mx-4"
       >
         <div className="mb-4">
-          <h1 className="font-bold text-2xl">IndiaEats</h1>
+          <h1 className="font-bold text-2xl">SurajEats</h1>
         </div>
         <div className="mb-4">
           <div className="relative">
@@ -68,9 +63,9 @@ const Signup = () => {
               className="pl-10 focus-visible:ring-1"
             />
             <User className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
-            {
-                errors.fullname && <p className="text-red-500 text-sm">{errors.fullname}</p>
-            }
+            {errors.fullname && (
+              <p className="text-red-500 text-sm">{errors.fullname}</p>
+            )}
           </div>
         </div>
         <div className="mb-4">
@@ -84,9 +79,9 @@ const Signup = () => {
               className="pl-10 focus-visible:ring-1"
             />
             <Contact className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
-            {
-                errors.contact && <p className="text-red-500 text-sm">{errors.contact}</p>
-            }
+            {errors.contact && (
+              <p className="text-red-500 text-sm">{errors.contact}</p>
+            )}
           </div>
         </div>
         <div className="mb-4">
@@ -100,9 +95,9 @@ const Signup = () => {
               className="pl-10 focus-visible:ring-1"
             />
             <Mail className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
-            {
-                errors.email && <p className="text-red-500 text-sm">{errors.email}</p>
-            }
+            {errors.email && (
+              <p className="text-red-500 text-sm">{errors.email}</p>
+            )}
           </div>
         </div>
         <div className="mb-4">
@@ -116,19 +111,22 @@ const Signup = () => {
               className="pl-10 focus-visible:ring-1"
             />
             <LockKeyhole className="absolute inset-y-2 left-2 text-gray-500 pointer-events-none" />
-            {
-                errors.password && <p className="text-red-500 text-sm">{errors.password}</p>
-            }
+            {errors.password && (
+              <p className="text-red-500 text-sm">{errors.password}</p>
+            )}
           </div>
         </div>
         <div className="mb-10">
-             {/* if loading is true then show the loader icon else show the login button . button is initially disabled if loading is true else it is enabled  */}
-             {loading ? (
+          {/* if loading is true then show the loader icon else show the login button . button is initially disabled if loading is true else it is enabled  */}
+          {loading ? (
             <Button disabled className="w-full bg-orange hover:bg-hoverOrange">
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
             </Button>
           ) : (
-            <Button type="submit" className="w-full bg-orange hover:bg-hoverOrange">
+            <Button
+              type="submit"
+              className="w-full bg-orange hover:bg-hoverOrange"
+            >
               Signup
             </Button>
           )}

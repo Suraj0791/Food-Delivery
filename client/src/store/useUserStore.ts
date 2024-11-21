@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import axios from "axios";
 import { LoginInputState, SignupInputState } from "@/schema/userSchema";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const API_END_POINT = "http://localhost:3000/api/v1/user"
@@ -34,6 +35,8 @@ type UserState = {
     updateProfile: (input:any) => Promise<void>; 
 }
 
+
+
 export const useUserStore = create<UserState>()(persist((set) => ({
     user: null,
     isAuthenticated: false,
@@ -53,7 +56,17 @@ export const useUserStore = create<UserState>()(persist((set) => ({
                 set({ loading: false, user: response.data.user, isAuthenticated: true });
             }
         } catch (error: any) {
-            toast.error(error.response.data.message);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            if (error.response?.status === 409) {
+                // Redirect to login page
+                const navigate=useNavigate();
+                toast.info('User already exists. Redirecting to login...');
+                navigate("/login"); // Add navigate function in context
+                return;
+            }
+            
+            toast.error(errorMessage);
+
             set({ loading: false });
         }
     },
@@ -71,9 +84,15 @@ export const useUserStore = create<UserState>()(persist((set) => ({
                 set({ loading: false, user: response.data.user, isAuthenticated: true });
             }
         } catch (error: any) {
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+
             console.log("login error h",error);
-            toast.error(error.response.data.message);
+            toast.error(errorMessage);
+
             set({ loading: false });
+        }finally{
+            set({ loading: false });
+
         }
     },
     verifyEmail: async (verificationCode: string) => {
@@ -89,8 +108,14 @@ export const useUserStore = create<UserState>()(persist((set) => ({
                 set({ loading: false, user: response.data.user, isAuthenticated: true });
             }
         } catch (error: any) {
-            toast.success(error.response.data.message);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            console.log("error:",error)
+            toast.error(errorMessage);
+
             set({ loading: false });
+        }finally{
+            set({ loading: false });
+
         }
     },
     checkAuthentication: async () => {
@@ -101,6 +126,7 @@ export const useUserStore = create<UserState>()(persist((set) => ({
                 set({user: response.data.user, isAuthenticated: true, isCheckingAuth: false });
             }
         } catch (error) {
+
             set({isAuthenticated: false, isCheckingAuth: false });
         }
     },
@@ -113,8 +139,13 @@ export const useUserStore = create<UserState>()(persist((set) => ({
                 set({ loading: false, user: null, isAuthenticated: false })
             }
         } catch (error:any) {
-            toast.error(error.response.data.message);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            toast.error(errorMessage);
+
             set({ loading: false });
+        }finally{
+            set({ loading: false });
+
         }
     },
 
@@ -127,8 +158,14 @@ export const useUserStore = create<UserState>()(persist((set) => ({
                 set({ loading: false });
             }
         } catch (error: any) {
-            toast.error(error.response.data.message);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+
+            toast.error(errorMessage);
+
             set({ loading: false });
+        }finally{
+            set({ loading: false });
+
         }
     },
     resetPassword: async (token: string, newPassword: string) => {
@@ -140,8 +177,13 @@ export const useUserStore = create<UserState>()(persist((set) => ({
                 set({ loading: false });
             }
         } catch (error: any) {
-            toast.error(error.response.data.message);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            toast.error(errorMessage);
+
             set({ loading: false });
+        }finally{
+            set({ loading: false });
+
         }
     },
     updateProfile: async (input:any) => {
@@ -156,7 +198,9 @@ export const useUserStore = create<UserState>()(persist((set) => ({
                 set({user:response.data.user, isAuthenticated:true});
             }
         } catch (error:any) { 
-            toast.error(error.response.data.message);
+            const errorMessage = error.response?.data?.message || 'An error occurred';
+            toast.error(errorMessage);
+
         }
     }
 }),

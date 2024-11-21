@@ -16,7 +16,11 @@ class OrderController {
 
     async createCheckoutSession(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+
+            console.log(req.id);
+            
             const session = await createCheckoutSession(req.body, req.id);
+    
             res.status(200).json({
                 session,
             });

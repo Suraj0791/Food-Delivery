@@ -7,8 +7,13 @@ import { Restaurant } from '../models/restraunt.model.ts';
 const menuRepository = new MenuRepository();
 
 export const addMenu = async (data: Partial<IMenu>, file: Express.Multer.File, userId: string): Promise<IMenu> => {
+  try {
+    console.log('Adding menu in service');
+    console.log('Data in service:', data);
+    console.log('User ID in service:', userId);
+
     if (!file) {
-        throw new Error('Image is required');
+      throw new Error('Image is required');
     }
 
     const imageUrl = await uploadImageOnCloudinary(file);
@@ -16,25 +21,40 @@ export const addMenu = async (data: Partial<IMenu>, file: Express.Multer.File, u
 
     const restaurant = await Restaurant.findOne({ user: userId });
     if (!restaurant) {
-        throw new Error('Restaurant not found');
+      throw new Error('Restaurant not found');
     }
-//@ts-ignore
-    (restaurant.menus as mongoose.Schema.Types.ObjectId[]).push(menu._id);
+
+    (restaurant.menus as mongoose.Schema.Types.ObjectId[]).push(menu._id as mongoose.Schema.Types.ObjectId);
     await restaurant.save();
 
+    console.log('Menu added:', menu);
     return menu;
+  } catch (error) {
+    console.error('Error in addMenu service:', error);
+    throw error;
+  }
 };
 
 export const editMenu = async (id: string, data: Partial<IMenu>, file?: Express.Multer.File): Promise<IMenu | null> => {
+  try {
+    console.log('Editing menu in service');
+    console.log('Data in service:', data);
+
     const menu = await menuRepository.get(id);
     if (!menu) {
-        throw new Error('Menu not found');
+      throw new Error('Menu not found');
     }
 
     if (file) {
-        const imageUrl = await uploadImageOnCloudinary(file);
-        data.image = imageUrl;
+      const imageUrl = await uploadImageOnCloudinary(file);
+      data.image = imageUrl;
     }
 
-    return menuRepository.update(id, data);
+    const updatedMenu = await menuRepository.update(id, data);
+    console.log('Menu updated:', updatedMenu);
+    return updatedMenu;
+  } catch (error) {
+    console.error('Error in editMenu service:', error);
+    throw error;
+  }
 };
