@@ -16,8 +16,8 @@ class OrderController {
 
     async createCheckoutSession(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
+            console.log('User ID:', req.id); // Log the user ID
 
-            console.log(req.id);
             
             const session = await createCheckoutSession(req.body, req.id);
     

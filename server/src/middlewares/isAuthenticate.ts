@@ -13,6 +13,7 @@ declare global {
 export const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.cookies.token;
+        console.log("token",token)
         if (!token) {
             return res.status(401).json({
                 success: false,
@@ -20,7 +21,12 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
             });
         }
         // verify the tokn
-        const decode = jwt.verify(token, process.env.SECRET_KEY!) as jwt.JwtPayload;
+        
+        const decode = jwt.verify(token, process.env.JWT_SECRET!) as jwt.JwtPayload;
+
+
+
+
         // check if decoding was successfull
         if (!decode) {
             return res.status(401).json({
@@ -28,7 +34,8 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
                 message: "Invalid token"
             })
         }
-        req.id = decode.userId;
+        console.log("decode : ",decode)
+        req.id = (decode as any).userId;
         next();
     } catch (error) {
         return res.status(500).json({
