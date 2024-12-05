@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import * as menuService from '../services/menu-service.ts';
+import { getMenuByRestaurantId } from '../services/menu-service.ts';
+
 
 class MenuController {
   async addMenu(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       console.log('Request received for adding menu');
-      const userId = req.userId;
+      const userId = req.id;
       if (!userId) {
         throw new Error('User ID is required');
       }
@@ -51,6 +53,24 @@ class MenuController {
       next(error);
     }
   }
+  
+  async getMenuByRestaurantId(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const menu = await getMenuByRestaurantId(req.params.restaurantId);
+      res.status(200).json({
+        success: true,
+        menu,
+      });
+    } catch (error) {
+      console.error('Error fetching menu:', error);
+      next(error);
+    }
+  }
+
+
+  
+  
+
 }
 
 export default new MenuController();

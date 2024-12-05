@@ -117,3 +117,7 @@ export const checkAuth = async (userId: string) => {
 export const updateProfile = async (userId: string, data: Partial<IUser>) => {
     return userRepo.update(userId, data);
 };
+
+export const getProfile = async (userId: string) => {
+    return userRepo.get(userId);
+  };

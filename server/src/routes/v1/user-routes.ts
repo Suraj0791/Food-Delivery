@@ -15,5 +15,7 @@ router.get('/check-auth', isAuthenticated, UserController.checkAuth);
 //@ts-ignore
 router.put('/update-profile', isAuthenticated, UserController.updateProfile);
 router.post('/logout', UserController.logout);
+//@ts-ignore
+router.get('/profile', isAuthenticated, UserController.getProfile);
 
-export default router;
+export default router; 

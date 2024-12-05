@@ -2,32 +2,49 @@ import {
   Loader2,
   LocateIcon,
   Mail,
-  MapPin ,
+  MapPin,
   MapPinnedIcon,
   Plus,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useRef, useState, useEffect } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
-
+import axios from "axios";
 
 const Profile = () => {
- const [profileData, setProfileData] = useState({
-      fullname: " ",
-      email: "",
-      address: "",
-      city: "",
-      country: "",
-      profilePicture: "",
-      });
-      
+  const [profileData, setProfileData] = useState({
+    fullname: "",
+    email: "",
+    address: "",
+    city: "",
+    country: "",
+    profilePicture: "",
+  });
+
   const imageRef = useRef<HTMLInputElement | null>(null);
-  const [selectedProfilePicture, setSelectedProfilePicture] =
-    useState<string>(" ");
- 
-  const Loading = false;
+  const [selectedProfilePicture, setSelectedProfilePicture] = useState<string>("");
+  const [loading, setLoading] = useState(false);
+
+  // Fetch profile data when the component mounts
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("http://localhost:3000/api/v1/user/profile"); // Adjust the endpoint as needed
+        setProfileData(response.data);
+        setSelectedProfilePicture(response.data.profilePicture);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching profile data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
+
   const fileChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -44,107 +61,145 @@ const Profile = () => {
     }
   };
 
-  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setProfileData({ ...profileData, [name]: value });
+    setProfileData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const updateProfileHandler = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    try {
+      setLoading(true);
+      await axios.put("/api/profile", profileData); // Adjust the endpoint as needed
+      setLoading(false);
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      setLoading(false);
+    }
   };
 
   return (
-    <form onSubmit={updateProfileHandler} className="max-w-7xl mx-auto my-5">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Avatar className="relative md:w-28 md:h-28 w-20 h-20">
-            <AvatarImage src={selectedProfilePicture}/>
-            <AvatarFallback>CN</AvatarFallback>
-            <input
-              ref={imageRef}
-              className="hidden"
-              type="file"
-              accept="image/*"
-              onChange={fileChangeHandler}
+    <div className="profile-section">
+      <h1 className="text-2xl font-bold mb-4">Profile</h1>
+      {loading ? (
+        <Loader2 className="animate-spin" />
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Label>Full Name</Label>
+            <Input
+              type="text"
+              name="fullname"
+              value={profileData.fullname}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              required
             />
-            <div
-              onClick={() => imageRef.current?.click()}
-              className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 bg-black bg-opacity-50 rounded-full cursor-pointer"
-            >
-              <Plus className="text-white w-8 h-8" />
-            </div>
-          </Avatar>
-          <Input
-            type="text"
-            name="fullname"
-            value={profileData.fullname}
-            onChange={changeHandler}
-            className="font-bold text-2xl outline-none border-none focus-visible:ring-transparent"
-          />
-        </div>
-      </div>
-      <div className="grid md:grid-cols-4 md:gap-2 gap-3 my-10">
-        <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-          <Mail className="text-gray-500" />
-          <div className="w-full">
+          </div>
+          <div>
             <Label>Email</Label>
-            <input
-            disabled
+            <Input
+              type="email"
               name="email"
               value={profileData.email}
-              onChange={changeHandler}
-              className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+              onChange={handleChange}
+              placeholder="Enter your email"
+              required
             />
           </div>
-        </div>
-        <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-          <LocateIcon className="text-gray-500" />
-          <div className="w-full">
+          <div>
+            <Label>Contact</Label>
+            <Input
+              type="text"
+              name="contact"
+              value={profileData.contact}
+              onChange={handleChange}
+              placeholder="Enter your contact number"
+              required
+            />
+          </div>
+          <div>
             <Label>Address</Label>
-            <input
+            <Input
+              type="text"
               name="address"
               value={profileData.address}
-              onChange={changeHandler}
-              className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+              onChange={handleChange}
+              placeholder="Enter your address"
+              required
             />
           </div>
-        </div>
-        <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-          <MapPin className="text-gray-500" />
-          <div className="w-full">
+          <div>
             <Label>City</Label>
-            <input
+            <Input
+              type="text"
               name="city"
               value={profileData.city}
-              onChange={changeHandler}
-              className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+              onChange={handleChange}
+              placeholder="Enter your city"
+              required
             />
           </div>
-        </div>
-        <div className="flex items-center gap-4 rounded-sm p-2 bg-gray-200">
-          <MapPinnedIcon className="text-gray-500" />
-          <div className="w-full">
+          <div>
+            <Label>State</Label>
+            <Input
+              type="text"
+              name="state"
+              value={profileData.state}
+              onChange={handleChange}
+              placeholder="Enter your state"
+              required
+            />
+          </div>
+          <div>
+            <Label>Zip Code</Label>
+            <Input
+              type="text"
+              name="zipCode"
+              value={profileData.zipCode}
+              onChange={handleChange}
+              placeholder="Enter your zip code"
+              required
+            />
+          </div>
+          <div>
             <Label>Country</Label>
-            <input
+            <Input
+              type="text"
               name="country"
               value={profileData.country}
-              onChange={changeHandler}
-              className="w-full text-gray-600 bg-transparent focus-visible:ring-0 focus-visible:border-transparent outline-none border-none"
+              onChange={handleChange}
+              placeholder="Enter your country"
+              required
             />
           </div>
-        </div>
-      </div>
-      <div className="text-center">
-        {Loading ? (
-          <Button disabled className="bg-orange hover:bg-hoverOrange">
-            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
-            Please wait
+          <div>
+            <Label>Profile Picture</Label>
+            <input
+              type="file"
+              ref={imageRef}
+              onChange={fileChangeHandler}
+              accept="image/*"
+              className="hidden"
+            />
+            <Avatar className="w-24 h-24">
+              <AvatarImage src={selectedProfilePicture} alt="Profile Picture" />
+              <AvatarFallback>Profile</AvatarFallback>
+            </Avatar>
+            <Button type="button" onClick={() => imageRef.current?.click()}>
+              Upload Picture
+            </Button>
+          </div>
+          <Button type="submit" className="bg-blue-500 hover:bg-blue-700" disabled={loading}>
+            {loading ? <Loader2 className="animate-spin" /> : "Update Profile"}
           </Button>
-        ) : (
-          <Button type="submit" className="bg-orange hover:bg-hoverOrange">Update</Button>
-        )}
-      </div>
-    </form>
+        </form>
+      )}
+    </div>
   );
 };
 

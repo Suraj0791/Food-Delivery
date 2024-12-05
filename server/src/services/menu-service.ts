@@ -58,3 +58,7 @@ export const editMenu = async (id: string, data: Partial<IMenu>, file?: Express.
     throw error;
   }
 };
+
+export const getMenuByRestaurantId = async (restaurantId: string) => {
+  return menuRepository.findByRestaurantId(restaurantId);
+};

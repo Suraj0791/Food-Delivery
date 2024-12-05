@@ -13,13 +13,16 @@ class OrderController {
             next(error);
         }
     }
-
     async createCheckoutSession(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            console.log('User ID:', req.id); // Log the user ID
-
-            
-            const session = await createCheckoutSession(req.body, req.id);
+            const { restaurantId, cartItems, deliveryDetails } = req.body;
+            console.log(restaurantId)
+    
+            if (!restaurantId) {
+                throw new Error("Restaurant ID is required.");
+            }
+    
+            const session = await createCheckoutSession({ restaurantId, cartItems, deliveryDetails }, req.id);
     
             res.status(200).json({
                 session,
@@ -28,7 +31,7 @@ class OrderController {
             next(error);
         }
     }
-
+    
     async stripeWebhook(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const signature = req.headers['stripe-signature'] as string;

@@ -12,6 +12,7 @@ type MenuState = {
     menu: null,
     createMenu: (formData: FormData) => Promise<void>;
     editMenu: (menuId: string, formData: FormData) => Promise<void>;
+
 }
 
 export const useMenuStore = create<MenuState>()(persist((set) => ({
@@ -55,6 +56,18 @@ export const useMenuStore = create<MenuState>()(persist((set) => ({
             set({ loading: false });
         }
     },
+    getMenu: async (restaurantId: string) => {
+        try {
+          set({ loading: true });
+          const response = await axios.get(`${API_END_POINT}/restaurant/${restaurantId}`);
+          if (response.data.success) {
+            set({ loading: false, menu: response.data.menu });
+          }
+        } catch (error: any) {
+          toast.error(error.response.data.message);
+          set({ loading: false });
+        }
+      },
 }), {
     name: "menu-name",
     storage: createJSONStorage(() => localStorage)

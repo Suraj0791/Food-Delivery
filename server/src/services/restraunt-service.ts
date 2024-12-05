@@ -9,6 +9,7 @@ const restaurantRepo = new RestaurantRepository();
 export const createRestaurant = async (data: Partial<IRestaurant>, userId: string, file : Express.Multer.File) => {
   try {
     console.log('Creating restaurant in service');
+    console.log("user id in service",userId);
     const existingRestaurant = await restaurantRepo.findByUserId(userId);
     if (existingRestaurant) {
       throw new Error('Restaurant already exists for this user');

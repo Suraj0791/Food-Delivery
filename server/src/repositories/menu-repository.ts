@@ -1,4 +1,5 @@
 import CrudRepository from "./crud-repository.ts";
+import mongoose from 'mongoose';
 
 import { Menu, IMenuDocument } from "../models/menu.model.ts";
 
@@ -8,8 +9,18 @@ class MenuRepository extends CrudRepository<IMenuDocument> {
   }
 
   async findByRestaurantId(restaurantId: string) {
-    return this.model.find({ restaurant: restaurantId });
-  }
+    const objectId = new mongoose.Types.ObjectId(restaurantId);
+
+    const menus = await Menu.find({ restaurant: objectId });
+    console.log('Menus found:', menus);
+    return menus;
+
 }
+  }
+  
+  
+
+
+
 
 export default MenuRepository;

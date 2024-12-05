@@ -12,6 +12,7 @@ export const useOrderStore = create<OrderState>()(persist((set) => ({
   createCheckoutSession: async (checkoutSession: CheckoutSessionRequest) => {
     try {
       set({ loading: true });
+      console.log("checkoutSession",checkoutSession)
       const response = await axios.post(`${API_END_POINT}/checkout`, checkoutSession, {
         headers: {
           'Content-Type': 'application/json'
@@ -29,7 +30,8 @@ export const useOrderStore = create<OrderState>()(persist((set) => ({
       set({ loading: true });
       const response = await axios.get(`${API_END_POINT}/`);
       set({ loading: false, orders: response.data.orders });
-    } catch (error) {
+    } catch (error: any) {
+      
       set({ loading: false });
     }
   }

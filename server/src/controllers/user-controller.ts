@@ -55,6 +55,29 @@ class UserController {
         }
     }
 
+    async getProfile(req: Request, res: Response, next: NextFunction) {
+        try {
+          const userId = req.id;
+          console.log(userId);
+          const user = await checkAuth(userId);
+          console.log(user);
+          if (!user) {
+            return res.status(404).json({
+              success: false,
+              message: 'User not found',
+            });
+          }
+          res.status(200).json({
+            success: true,
+            user: { ...user.toObject(), password: undefined },
+          });
+        } catch (error) {
+          next(error);
+        }
+      }
+
+      
+
     async forgotPassword(req: Request, res: Response, next: NextFunction) {
         try {
             const { email } = req.body;
@@ -104,12 +127,21 @@ class UserController {
     async updateProfile(req: Request, res: Response, next: NextFunction){
         try {
             const userId = req.id;
-            const { fullname, email, address, city, country, profilePicture } = req.body;
+            const { fullname, email, address, city, state, zipCode, country, profilePicture } = req.body;
             let cloudResponse: any;
             if (profilePicture) {
                 cloudResponse = await cloudinary.uploader.upload(profilePicture);
             }
-            const updatedData = { fullname, email, address, city, country, profilePicture: cloudResponse?.secure_url };
+            const updatedData = {
+                fullname,
+                email,
+                address,
+                city,
+                state,
+                zipCode,
+                country,
+                profilePicture: cloudResponse?.secure_url,
+              };
             const user = await updateProfile(userId, updatedData);
             res.status(200).json({
                 success: true,
@@ -131,6 +163,8 @@ class UserController {
             next(error);
         }
     }
+
+    
 }
 
 export default new UserController();

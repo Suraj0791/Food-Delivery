@@ -15,7 +15,7 @@ const upload = multer();
     async createRestaurant(req: Request, res: Response, next: NextFunction): Promise<void> {
       try {
         console.log('Request received for creating restaurant');
-        const userId = req.userId;
+        const userId = req.id;
         if (!userId) {
           throw new Error('User ID is required');
         }
@@ -43,7 +43,7 @@ const upload = multer();
 
   async getRestaurant(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = req.userId;
+      const userId = req.id;
       if (!userId) {
         throw new Error('User ID is required');
       }
@@ -57,7 +57,7 @@ const upload = multer();
 
   async updateRestaurant(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = req.userId;
+      const userId = req.id;
       if (!userId) {
         throw new Error('User ID is required');
       }
@@ -71,7 +71,7 @@ const upload = multer();
 
   async getRestaurantOrder(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = req.userId;
+      const userId = req.id;
       if (!userId) {
         throw new Error('User ID is required');
       }

@@ -7,8 +7,11 @@ export interface IUser {
     contact: number;
     address: string;
     city: string;
+    zipCode: string;
     country: string;
     profilePicture: string;
+    state: string;
+
     admin: boolean;
     lastLogin?: Date;
     isVerified?: boolean;
@@ -56,6 +59,9 @@ const userSchema = new mongoose.Schema<IUserDocument>({
         type: String,
         default: "",
     },
+    zipCode: { type: String, required: true },
+    state: { type: String, required: true },
+
     admin: { type: Boolean, default: false },
     // advanced authentication
     lastLogin: {

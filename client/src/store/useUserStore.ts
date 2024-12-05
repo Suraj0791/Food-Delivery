@@ -188,7 +188,9 @@ export const useUserStore = create<UserState>()(persist((set) => ({
     },
     updateProfile: async (input:any) => {
         try { 
-            const response = await axios.put(`${API_END_POINT}/profile/update`, input,{
+            set({ loading: true });
+
+            const response = await axios.put(`${API_END_POINT}/update-profile`, input,{
                 headers:{
                     'Content-Type':'application/json'
                 }
@@ -200,7 +202,11 @@ export const useUserStore = create<UserState>()(persist((set) => ({
         } catch (error:any) { 
             const errorMessage = error.response?.data?.message || 'An error occurred';
             toast.error(errorMessage);
+            set({ loading: false });
 
+
+        }finally{
+            set({ loading: false });
         }
     }
 }),

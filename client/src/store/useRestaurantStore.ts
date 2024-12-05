@@ -30,7 +30,12 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set, get) =
                 set({ loading: false });
             }
         } catch (error: any) {
+            console.log(error.response.data)
+            console.log(error)
+
             toast.error(error.response.data.message);
+            set({ loading: false });
+        }finally{
             set({ loading: false });
         }
     },
@@ -38,6 +43,8 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set, get) =
         try {
             set({ loading: true });
             const response = await axios.get(`${API_END_POINT}/`);
+            console.log("getRestaurant API response:", response.data); // Log API response
+
             if (response.data.success) {
                 set({ loading: false, restaurant: response.data.restaurant });
             }

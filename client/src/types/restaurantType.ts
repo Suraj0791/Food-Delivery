@@ -1,6 +1,7 @@
 import { Orders } from "./orderType";
 
 export type MenuItem = {
+    restaurantId: string;
     _id: string;
     name: string;
     description: string;

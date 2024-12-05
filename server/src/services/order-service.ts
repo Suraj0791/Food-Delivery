@@ -34,7 +34,12 @@ export const getOrders = async (userId: string) => {
 
 //
 export const createCheckoutSession = async (checkoutSessionRequest: CheckoutSessionRequest, userId: string) => {
-    const restaurant = await Restaurant.findById(checkoutSessionRequest.restaurantId).populate('menus');
+    console.log(checkoutSessionRequest)
+    const { restaurantId, cartItems, deliveryDetails } = checkoutSessionRequest;
+
+    console.log('Restaurant ID:', restaurantId);
+
+    const restaurant = await Restaurant.findById(restaurantId).populate('menus');
     if (!restaurant) {
         throw new Error('Restaurant not found.');
     }

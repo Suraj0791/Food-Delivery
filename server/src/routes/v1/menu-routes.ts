@@ -8,6 +8,8 @@ const router = Router();
 
 //@ts-ignore
 router.post('/', isAuthenticated, upload.single('image'), MenuController.addMenu);
+router.get('/restaurant/:restaurantId', MenuController.getMenuByRestaurantId);
+
 //@ts-ignore
 router.put('/:id', isAuthenticated, upload.single('image'), MenuController.editMenu);
 

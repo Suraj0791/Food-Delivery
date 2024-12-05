@@ -1,6 +1,7 @@
 import { MenuItem } from "./restaurantType";
 
-export interface CartItem extends MenuItem { 
+export interface CartItem extends MenuItem {
+    restaurantId: string; 
     quantity:number;
 }
 export type CartState = {
@@ -11,3 +12,6 @@ export type CartState = {
     incrementQuantity: (id:string) => void;
     decrementQuantity: (id:string) => void;
 }
+
+
+

@@ -6,6 +6,7 @@ class UserRepository extends CrudRepository<IUserDocument> {
     super(User);
   }
 
+  
   async findByEmail(email: string) {
     return this.model.findOne({ email });
   }

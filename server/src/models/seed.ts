@@ -1,55 +1,35 @@
 import mongoose from "mongoose";
-import { Restaurant } from "./restraunt.model.ts"; // Adjust the path to your Restaurant model
-import { Menu } from "./menu.model.ts"; // Adjust the path to your Menu model
+import { Restaurant } from "./restraunt.model.ts";
+import { Menu } from "./menu.model.ts";
 
-const MONGO_URI = "mongodb+srv://surajsharma790340:iHi50UNjtqHmMsMb@cluster0.bcakj.mongodb.net/"; 
+import {ServerConfig} from "../config/index.ts"
+
+const MONGO_URI=ServerConfig.MONGO_URI;
 
 const seedDatabase = async () => {
   try {
     await mongoose.connect(MONGO_URI);
     console.log("Connected to MongoDB");
 
-    
     await Restaurant.deleteMany({});
     await Menu.deleteMany({});
     console.log("Existing data cleared");
 
-    // Generate random menus
-    const menus = [];
-    for (let i = 0; i < 600; i++) { // 30 restaurants * 20 menus
-      menus.push(
-        new Menu({
-          name: `Menu Item ${i + 1}`,
-          description: `Description for Menu Item ${i + 1}`,
-          price: Math.floor(Math.random() * 500) + 100, // Random price between 100 and 600
-          image: `https://via.placeholder.com/150?text=Menu+${i + 1}`,
-        })
-      );
-    }
-
-    // Save all menus
-    const savedMenus = await Menu.insertMany(menus);
-    console.log("Menus created:", savedMenus.length);
-
     // Generate random restaurants
     const restaurants = [];
     for (let i = 0; i < 30; i++) {
-      const randomMenus = savedMenus
-        .sort(() => 0.5 - Math.random()) // Shuffle
-        .slice(0, Math.floor(Math.random() * 20) + 1); // Pick up to 20 menus
-
       restaurants.push(
         new Restaurant({
-          user: new mongoose.Types.ObjectId(),
+          user: "673f776b0864f9d5c6465369", // Replace with actual user IDs if available
           restaurantName: `Restaurant ${i + 1}`,
-          city: `City ${Math.floor(Math.random() * 10) + 1}`, // Random city names
-          country: `Country ${Math.floor(Math.random() * 5) + 1}`, // Random country names
-          deliveryTime: Math.floor(Math.random() * 60) + 20, // Random time between 20-80 minutes
+          city: `City ${Math.floor(Math.random() * 10) + 1}`,
+          country: `Country ${Math.floor(Math.random() * 5) + 1}`,
+          deliveryTime: Math.floor(Math.random() * 60) + 20,
           cuisines: Array.from(
             { length: Math.floor(Math.random() * 3) + 1 },
             (_, idx) => `Cuisine ${idx + 1}`
-          ), // 1-3 random cuisines
-          menus: randomMenus.map((menu) => menu._id),
+          ),
+          menus: [], // To be populated later
           imageUrl: `https://via.placeholder.com/300?text=Restaurant+${i + 1}`,
         })
       );
@@ -58,6 +38,36 @@ const seedDatabase = async () => {
     // Save all restaurants
     const savedRestaurants = await Restaurant.insertMany(restaurants);
     console.log("Restaurants created:", savedRestaurants.length);
+
+    // Generate menus and associate them with restaurants
+    const menus = [];
+
+    for (const restaurant of savedRestaurants) {
+      const numMenus = Math.floor(Math.random() * 20) + 1; // Each restaurant has 1 to 20 menus
+      const restaurantMenus = [];
+      for (let i = 0; i < numMenus; i++) {
+        const menu: typeof Menu.prototype = new Menu({
+          name: `Menu Item ${menus.length + 1}`,
+          description: `Description for Menu Item ${menus.length + 1}`,
+          price: Math.floor(Math.random() * 500) + 100,
+          image: `https://via.placeholder.com/150?text=Menu+${menus.length + 1}`,
+          restaurant: restaurant._id, // Associate menu with restaurant
+        });
+        menus.push(menu);
+        restaurantMenus.push(menu._id);
+      }
+      // Update restaurant's menus array
+      restaurant.menus = restaurantMenus;
+    }
+
+    // Save all menus
+    const savedMenus = await Menu.insertMany(menus);
+    console.log("Menus created:", savedMenus.length);
+
+    // Update restaurants with their menus
+    for (const restaurant of savedRestaurants) {
+      await Restaurant.updateOne({ _id: restaurant._id }, { menus: restaurant.menus });
+    }
 
     console.log("Database seeded successfully!");
   } catch (error) {
@@ -68,5 +78,5 @@ const seedDatabase = async () => {
   }
 };
 
-// Run the seed script
+// Invoke the seedDatabase function
 seedDatabase();
